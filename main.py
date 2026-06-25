@@ -49,37 +49,27 @@ def gerar_gherkin(descricao):
     """Chama o Gemini para gerar Gherkin a partir de uma descrição"""
     
     prompt = f"""
-Você é um especialista em testes e requisitos de software.
-
-Com base na descrição da funcionalidade abaixo, gere cenários de teste no formato Gherkin.
-
-REGRAS IMPORTANTES:
-1. Use português para as palavras-chave: Funcionalidade, Cenário, Dado, Quando, Então, E, Mas
-2. Sempre inclua: Funcionalidade, pelo menos 3 cenários (sucesso, erro e borda)
-3. Use a estrutura correta com indentação (2 ou 4 espaços)
-4. Seja específico e realista nos exemplos
+Gere cenários de teste no formato Gherkin para a seguinte funcionalidade.
+Use português, inclua pelo menos 3 cenários (sucesso, erro e borda) e use indentação correta.
 
 DESCRIÇÃO DA FUNCIONALIDADE:
 {descricao}
-
-GEREN OS CENÁRIOS GHERKIN ABAIXO:
 """
     
     try:
-        # Chamada para o Gemini 
+        config = GenerateContentConfig(
+            system_instruction="Você é um especialista em testes e requisitos de software. Seu objetivo é analisar descrições e gerar cenários Gherkin estritos, sem textos adicionais ou conversas.",
+            temperature=0.7,
+            response_mime_type="text/plain"
+        )
+        
         resposta = client.models.generate_content(
             model=MODELO,
             contents=prompt,
-            config=GenerateContentConfig(
-                temperature=0.7,  # Controla a criatividade
-                max_output_tokens=1024  # Tamanho máximo da resposta 
-            )
+            config=config  # <--- Note que aqui passamos a nossa variável configurada
         )
         
-        # Pega o texto gerado
-        gherkin_gerado = resposta.text
-        
-        return gherkin_gerado
+        return resposta.text
         
     except Exception as e:
         print(f"❌ Erro ao chamar o Gemini: {e}")
@@ -110,7 +100,7 @@ def main():
     descricoes = ler_descricoes()
     
     if not descricoes:
-        print("❌ Nenhuma descrição encontrada. Adicione arquivos .txt em 'entradas/'")
+        print("❌ Nenhuma descrição encontrada. Adicione arquivos .txt em 'input/'")
         return
     
     print(f"📄 Encontradas {len(descricoes)} descrição(ões)")
