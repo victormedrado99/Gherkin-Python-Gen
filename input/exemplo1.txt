@@ -1,0 +1,6 @@
+Sistema de autenticação de usuários. O usuário precisa fornecer email e senha para acessar o sistema. 
+- Se o email não estiver cadastrado, exibir mensagem "Usuário não encontrado"
+- Se a senha estiver incorreta, exibir mensagem "Senha inválida"
+- Se ambos estiverem corretos, redirecionar para o dashboard
+- O sistema deve bloquear a conta após 3 tentativas falhas consecutivas
+- O usuário pode solicitar recuperação de senha por email
